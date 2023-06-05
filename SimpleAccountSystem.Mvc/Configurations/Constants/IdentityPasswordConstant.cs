@@ -1,6 +1,6 @@
-﻿namespace SimpleAccountSystem.Mvc.Constants.Identity
+﻿namespace SimpleAccountSystem.Mvc.Configurations.Constants
 {
-    public static class PasswordConstant
+    public static class IdentityPasswordConstant
     {
         public const bool RequireNonAlphanumeric = true;
         public const bool RequireDigit = true;

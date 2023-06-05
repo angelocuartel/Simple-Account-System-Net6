@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using SimpleAccountSystem.Mvc.Constants.Identity;
+using SimpleAccountSystem.Mvc.Configurations.Constants;
 
 namespace SimpleAccountSystem.Mvc.Configurations.Identity
 {
@@ -10,12 +10,12 @@ namespace SimpleAccountSystem.Mvc.Configurations.Identity
         {
             services.Configure<IdentityOptions>(opt =>
             {
-                opt.Password.RequireNonAlphanumeric = PasswordConstant.RequireNonAlphanumeric;
-                opt.Password.RequiredLength = PasswordConstant.RequiredLength;
-                opt.Password.RequireLowercase = PasswordConstant.RequiredLowerCase;
-                opt.Password.RequiredUniqueChars = PasswordConstant.RequiredUniqueChars;
-                opt.Password.RequireDigit = PasswordConstant.RequireDigit;
-                opt.Password.RequireUppercase = PasswordConstant.RequireUppercase;
+                opt.Password.RequireNonAlphanumeric = IdentityPasswordConstant.RequireNonAlphanumeric;
+                opt.Password.RequiredLength = IdentityPasswordConstant.RequiredLength;
+                opt.Password.RequireLowercase = IdentityPasswordConstant.RequiredLowerCase;
+                opt.Password.RequiredUniqueChars = IdentityPasswordConstant.RequiredUniqueChars;
+                opt.Password.RequireDigit = IdentityPasswordConstant.RequireDigit;
+                opt.Password.RequireUppercase = IdentityPasswordConstant.RequireUppercase;
             });
         }
     }
