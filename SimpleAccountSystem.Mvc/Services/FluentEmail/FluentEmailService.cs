@@ -1,8 +1,9 @@
 ﻿using FluentEmail.Core;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace SimpleAccountSystem.Mvc.Services.FluentEmail
 {
-    public class FluentEmailService
+    public class FluentEmailService : IEmailSender
     {
         private readonly IFluentEmail _fluentEmail;
         public FluentEmailService(IFluentEmail fluentEmail)

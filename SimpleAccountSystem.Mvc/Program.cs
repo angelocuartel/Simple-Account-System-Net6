@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using SimpleAccountSystem.Mvc.Configurations.FluentEmail;
 using SimpleAccountSystem.Mvc.Configurations.Identity;
@@ -23,7 +24,7 @@ builder.Services.BuildFluentEmailDependencies(builder.Configuration);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddScoped<FluentEmailService>();
+builder.Services.AddScoped<IEmailSender,FluentEmailService>();
 
 var app = builder.Build();
 
