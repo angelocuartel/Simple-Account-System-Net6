@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using SimpleAccountSystem.Mvc.Configurations.FluentEmail;
 using SimpleAccountSystem.Mvc.Configurations.Identity;
 using SimpleAccountSystem.Mvc.Data;
+using SimpleAccountSystem.Mvc.Services.FluentEmail;
+
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("SimpleAccountSystemMvcContextConnection") ?? throw new InvalidOperationException("Connection string 'SimpleAccountSystemMvcContextConnection' not found.");
 
@@ -14,8 +17,13 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
 // custom service config for identity password
 builder.Services.SetSecuredPasswordPolicy();
 
+//fluent email
+builder.Services.BuildFluentEmailDependencies(builder.Configuration);
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped<FluentEmailService>();
 
 var app = builder.Build();
 
