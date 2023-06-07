@@ -16,6 +16,9 @@ namespace SimpleAccountSystem.Mvc.Configurations.Identity
                 opt.Password.RequiredUniqueChars = IdentityPasswordConstant.RequiredUniqueChars;
                 opt.Password.RequireDigit = IdentityPasswordConstant.RequireDigit;
                 opt.Password.RequireUppercase = IdentityPasswordConstant.RequireUppercase;
+
+                opt.Lockout.MaxFailedAccessAttempts = IdentityLockConfigConstant.AttemptsBeforeLockout;
+                opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
             });
         }
     }
