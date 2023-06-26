@@ -16,8 +16,11 @@ builder.Services.AddDbContext<SimpleAccountSystemMvcContext>(options =>
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<SimpleAccountSystemMvcContext>();
 
-// custom service config for identity password
+builder.Services.AddDistributedMemoryCache();
+
+// custom service config for identity password and session
 builder.Services.SetSecuredPasswordPolicy();
+builder.Services.SetIdentitySessionCookiesConfiguration();
 
 //fluent email
 builder.Services.BuildFluentEmailDependencies(builder.Configuration);

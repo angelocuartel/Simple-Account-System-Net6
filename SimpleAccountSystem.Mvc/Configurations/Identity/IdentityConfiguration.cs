@@ -21,5 +21,16 @@ namespace SimpleAccountSystem.Mvc.Configurations.Identity
                 opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
             });
         }
+
+        public static void SetIdentitySessionCookiesConfiguration(this IServiceCollection services)
+        {
+            services.ConfigureApplicationCookie(opt =>
+            {
+                opt.Cookie.IsEssential = true;
+                opt.Cookie.SameSite = SameSiteMode.Strict;
+                opt.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                opt.Cookie.HttpOnly = false;
+            });
+        }
     }
 }
