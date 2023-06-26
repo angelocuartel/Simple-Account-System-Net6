@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using SimpleAccountSystem.Mvc.Configurations.FluentEmail;
 using SimpleAccountSystem.Mvc.Configurations.Identity;
+using SimpleAccountSystem.Mvc.Configurations.Session;
 using SimpleAccountSystem.Mvc.Data;
 using SimpleAccountSystem.Mvc.Services.FluentEmail;
 
@@ -26,6 +27,8 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<IEmailSender,FluentEmailService>();
 
+builder.Services.AddSessionWithDefaultConfiguration();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -43,6 +46,8 @@ app.UseRouting();
 app.UseAuthentication();;
 
 app.UseAuthorization();
+
+app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
