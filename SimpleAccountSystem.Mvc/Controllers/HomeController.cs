@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SimpleAccountSystem.Mvc.Models;
-using System.Diagnostics;
 
 namespace SimpleAccountSystem.Mvc.Controllers
 {
