@@ -13,12 +13,11 @@ namespace SimpleAccountSystem.Mvc.Attributes
 
             if (user != null)
             {
-                var name = user.FindFirst(ClaimTypes.Name)?.Value;
-                var requestPath = context.HttpContext.Session.GetString(name + stepUpPath);
+                var isValidStepUpAuth = context.HttpContext.Session.GetInt32("validStepUpAuth") == 1;
 
-                if (!string.IsNullOrEmpty(requestPath) && context.HttpContext.Request.Path.Equals(requestPath))
+                if (isValidStepUpAuth)
                 {
-                    context.HttpContext.Session.Remove(name + stepUpPath);
+                    context.HttpContext.Session.Remove("validStepUpAuth");
                     return;
 
                 }
