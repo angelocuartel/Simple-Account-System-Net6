@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using SimpleAccountSystem.Mvc.Configurations.FluentEmail;
@@ -14,6 +15,8 @@ builder.Services.AddDbContext<SimpleAccountSystemMvcContext>(options =>
     options.UseSqlite(connectionString));
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddRoles<IdentityRole>()
+    .AddRoleManager<RoleManager<IdentityRole>>()
     .AddEntityFrameworkStores<SimpleAccountSystemMvcContext>();
 
 builder.Services.AddDistributedMemoryCache();
