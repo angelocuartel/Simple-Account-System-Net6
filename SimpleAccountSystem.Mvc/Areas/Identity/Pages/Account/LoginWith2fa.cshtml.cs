@@ -77,21 +77,19 @@ namespace SimpleAccountSystem.Mvc.Areas.Identity.Pages.Account
         public async Task<IActionResult> OnGetAsync(string returnUrl = null)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
-            if(user is null)
-            {
-                throw new Exception("Unable to load two factor authentication");
-            }
 
-            //if (!user.TwoFactorEnabled)
-            //{
-            //    return RedirectToPage("Identity/Account/TwoFactorEnabled");
-            //}
+            if (user != null && !user.TwoFactorEnabled)
+            {
+                return RedirectToPage("identity/account/twofactorenabled");
+            }
 
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
+            var twoFactorValid = false;
+
             if (!ModelState.IsValid)
             {
                 return Page();
@@ -100,17 +98,25 @@ namespace SimpleAccountSystem.Mvc.Areas.Identity.Pages.Account
             returnUrl = returnUrl ?? Url.Content("~/");
 
             var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
-            if (user == null)
+
+            if (user is null)
             {
                 throw new InvalidOperationException($"Unable to load two-factor authentication user.");
             }
 
-            //var authenticatorCode = Input.TwoFactorCode.Replace(" ", string.Empty).Replace("-", string.Empty);
+            var authenticatorCode = Input.TwoFactorCode.Replace(" ", string.Empty).Replace("-", string.Empty);
 
-            var twoFactorValid = await _userManager.VerifyTwoFactorTokenAsync(user,"TokenProvider",Input.TwoFactorCode);
+            var tokenProvider = await _userManager.GetValidTwoFactorProvidersAsync(user);
+            if(tokenProvider != null || tokenProvider.Count > 0)
+            {
+                twoFactorValid = await _userManager.VerifyTwoFactorTokenAsync(user, tokenProvider.LastOrDefault(), authenticatorCode);
+            }
+
             //var twoFactorValid = true;
             if (twoFactorValid)
             {
+                await _signInManager.TwoFactorSignInAsync(tokenProvider.LastOrDefault(), authenticatorCode,false,false);
+
                 HttpContext.Session.SetInt32("validStepUpAuth", 1);
                 return RedirectToAction("Index","User");
             }
