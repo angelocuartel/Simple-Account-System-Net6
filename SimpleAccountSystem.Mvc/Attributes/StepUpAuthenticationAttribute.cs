@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
-using System.Security.Claims;
 
 namespace SimpleAccountSystem.Mvc.Attributes
 {
