@@ -103,7 +103,7 @@ namespace SimpleAccountSystem.Mvc.Areas.Identity.Pages.Account
                 user = await _userManager.GetUserAsync(HttpContext.User);
             }
 
-            if(user == null)
+            if(user == null && user.TwoFactorEnabled)
             {
                user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
             }
