@@ -1,7 +1,39 @@
-﻿
-@{
-    ViewData["Title"] = "Index";
-}
+﻿@using Microsoft.AspNetCore.Identity
+@using SimpleAccountSystem.Mvc.Commons
 
-<h1>Index</h1>
+@model GenericListResultDto<IdentityUser>
+
+<h1>User List</h1>
+<div class="table-responsive">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>UserName</th>
+                <th>Email</th>
+                <th>Two factor status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if(Model.List is not null)
+            {
+                @foreach (var user in Model.List)
+                {
+
+                    var twoFactor = user.TwoFactorEnabled ? "Enabled" : "Disabled";
+
+                    <tr>
+                        <td>@user.UserName</td>
+                        <td>@user.Email</td>
+                        <td>@twoFactor</td>
+                        <td>
+                            <btn class="btn btn-dark">Remove</btn>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
 
