@@ -97,15 +97,11 @@ namespace SimpleAccountSystem.Mvc.Areas.Identity.Pages.Account
 
             returnUrl = returnUrl ?? Url.Content("~/");
 
-            IdentityUser user = null;
-            if(HttpContext.User is not null)
+            IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
+            
+            if(user is null)
             {
-                user = await _userManager.GetUserAsync(HttpContext.User);
-            }
-
-            if(user == null && user.TwoFactorEnabled)
-            {
-               user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+                user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
             }
 
             if (user is null)
