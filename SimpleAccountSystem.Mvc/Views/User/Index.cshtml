@@ -1,11 +1,8 @@
-﻿@using Microsoft.AspNetCore.Identity
-@using SimpleAccountSystem.Mvc.Commons
-
-@model GenericListResultDto<IdentityUser>
+﻿
 
 <h1>User List</h1>
 <div class="table-responsive">
-    <table class="table table-bordered">
+    <table class="table table-bordered" id="user-table">
         <thead>
             <tr>
                 <th>UserName</th>
@@ -14,7 +11,7 @@
                 <th>Actions</th>
             </tr>
         </thead>
-        <tbody>
+      @*  <tbody>
             @if(Model.List is not null)
             {
                 @foreach (var user in Model.List)
@@ -32,8 +29,51 @@
                     </tr>
                 }
             }
-        </tbody>
+        </tbody>*@
     </table>
 </div>
+
+
+@section scripts{
+   <script>
+        const table = new DataTable('#user-table',{
+
+            //pagination settings
+            pagingType: 'full_numbers',
+
+            // server side processing settings
+            ajax:{
+                url: `User/GetUsers`,
+                type:'GET',
+                contentType: 'application/x-www-form-urlencoded',
+                dataType: 'json'
+            },
+            processing: true,
+            serverSide: true,
+
+            // columns settings
+            columns: [
+                { data: "userName"},
+                { data: "email"},
+                {
+                    data: "twoFactorEnabled",
+                    render : (data, type) => {
+                        if(data)
+                        return "enabled";
+                        else
+                        return "disabled";
+                    }
+                },
+                { 
+                    data: "actions",
+                    render : (data, type) => {
+                        return "<btn class = 'btn btn-danger'>Remove</btn>";
+                    }
+                },
+            ]
+
+        });
+   </script>
+}
 
 

@@ -1,13 +1,16 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoFixture;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SimpleAccountSystem.Mvc.Attributes;
 using SimpleAccountSystem.Mvc.Commons;
+using SimpleAccountSystem.Mvc.Dto;
 
 namespace SimpleAccountSystem.Mvc.Controllers
 {
     [Authorize]
-    [StepUpAuthentication]
+    //[StepUpAuthentication]
     public class UserController : Controller
     {
         private readonly UserManager<IdentityUser> _userManager;
@@ -19,18 +22,25 @@ namespace SimpleAccountSystem.Mvc.Controllers
 
         public IActionResult Index()
         {
-            var users = _userManager.Users.ToList();
-
-            var genericResult = new GenericListResultDto<IdentityUser>();
-            genericResult.List = users;
-
-            return View(genericResult);
+            return View();
         }
 
-        //[HttpGet]
-        //public IActionResult FilterByRoles()
-        //{
+        [HttpGet]
+        public IActionResult GetUsers()
+        {
+            var rawRequestQuery = HttpContext.Request.Query;
+            var extractedDataTableParameters = rawRequestQuery.ExtractQueryData();
 
-        //}
+            var users = _userManager.Users;
+            var result = new GenericResultDto<IdentityUser>
+            {
+                draw = extractedDataTableParameters.Draw,
+                data = users.Take(extractedDataTableParameters.Length).ToList(),
+                recordsTotal = users.Count(),
+                recordsFiltered = users.Count()
+            };
+
+            return new JsonResult(result);
+        }
     }
 }
