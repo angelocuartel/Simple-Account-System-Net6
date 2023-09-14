@@ -17,6 +17,7 @@ builder.Services.AddDbContext<SimpleAccountSystemMvcContext>(options =>
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>()
     .AddRoleManager<RoleManager<IdentityRole>>()
+    // add context where identity can use to store identity ralated data
     .AddEntityFrameworkStores<SimpleAccountSystemMvcContext>();
 
 builder.Services.AddDistributedMemoryCache();
