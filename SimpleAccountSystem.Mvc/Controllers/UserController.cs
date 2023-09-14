@@ -29,7 +29,7 @@ namespace SimpleAccountSystem.Mvc.Controllers
         public IActionResult GetUsers()
         {
             var rawRequestQuery = HttpContext.Request.Query;
-            var extractedDataTableParameters = rawRequestQuery.ExtractQueryData();
+            var extractedDataTableParameters = rawRequestQuery.ExtractGenericQueryData();
 
             var users = _userManager.Users;
             var result = new GenericResultDto<IdentityUser>

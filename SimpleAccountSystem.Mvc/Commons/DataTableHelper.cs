@@ -12,7 +12,7 @@ namespace SimpleAccountSystem.Mvc.Commons
         private const string START = "start";
         private const string LENGTH = "length";
 
-        public static GenericDataTableResultDto ExtractQueryData(this IQueryCollection queryCollection)
+        public static GenericDataTableResultDto ExtractGenericQueryData(this IQueryCollection queryCollection)
         {
             var result = new GenericDataTableResultDto
             {
