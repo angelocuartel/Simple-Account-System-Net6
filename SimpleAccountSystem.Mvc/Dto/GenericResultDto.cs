@@ -5,6 +5,6 @@
         public int draw { get; set; } = 1;
         public int recordsTotal { get; set; }
         public int recordsFiltered { get; set; }
-        public List<T>? data { get; set; }
+        public IEnumerable<T>? data { get; set; }
     }
 }

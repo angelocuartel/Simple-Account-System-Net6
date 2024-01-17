@@ -1,12 +1,8 @@
-﻿using AutoFixture;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using SimpleAccountSystem.Mvc.Attributes;
 using SimpleAccountSystem.Mvc.Commons;
 using SimpleAccountSystem.Mvc.Dto;
-using System.Reflection;
 
 namespace SimpleAccountSystem.Mvc.Controllers
 {
@@ -39,13 +35,13 @@ namespace SimpleAccountSystem.Mvc.Controllers
             }
             else
             {
-                users = _userManager.Users;
+                users = _userManager.Users.Take(extractedDataTableParameters.Length);
             }
 
             var result = new GenericResultDto<IdentityUser>
             {
                 draw = extractedDataTableParameters.Draw,
-                data = users.Take(extractedDataTableParameters.Length).ToList(),
+                data = users.Take(extractedDataTableParameters.Length),
                 recordsTotal = users.Count(),
                 recordsFiltered = users.Count()
             };
