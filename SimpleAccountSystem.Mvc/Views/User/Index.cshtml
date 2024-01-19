@@ -1,8 +1,14 @@
 ﻿
 
 <h1>User List</h1>
-<div class="table-responsive">
-    <table class="table table-bordered" id="user-table">
+<div class="row">
+    <div class="float-end">
+        <button id="btn-add-user" class="btn btn-primary w-[50%] float-end">Add User</button>
+    </div>
+</div>
+<div class="row">
+    <div class="table-responsive py-1 border-2 border-danger">
+    <table class=" table table-bordered" id="user-table">
         <thead>
             <tr>
                 <th>UserName</th>
@@ -11,69 +17,15 @@
                 <th>Actions</th>
             </tr>
         </thead>
-      @*  <tbody>
-            @if(Model.List is not null)
-            {
-                @foreach (var user in Model.List)
-                {
-
-                    var twoFactor = user.TwoFactorEnabled ? "Enabled" : "Disabled";
-
-                    <tr>
-                        <td>@user.UserName</td>
-                        <td>@user.Email</td>
-                        <td>@twoFactor</td>
-                        <td>
-                            <btn class="btn btn-dark">Remove</btn>
-                        </td>
-                    </tr>
-                }
-            }
-        </tbody>*@
     </table>
+</div>
 </div>
 
 
+<partial name="_AddUserPartialModal.cshtml" />
+
 @section scripts{
-   <script>
-        const table = new DataTable('#user-table',{
-
-            //pagination settings
-            pagingType: 'full_numbers',
-
-            // server side processing settings
-            ajax:{
-                url: `User/GetUsers`,
-                type:'GET',
-                contentType: 'application/x-www-form-urlencoded',
-                dataType: 'json'
-            },
-            processing: true,
-            serverSide: true,
-
-            // columns settings
-            columns: [
-                { data: "userName"},
-                { data: "email"},
-                {
-                    data: "twoFactorEnabled",
-                    render : (data, type) => {
-                        if(data)
-                        return "enabled";
-                        else
-                        return "disabled";
-                    }
-                },
-                { 
-                    data: "actions",
-                    render : (data, type) => {
-                        return "<btn class = 'btn btn-danger'>Remove</btn>";
-                    }
-                },
-            ]
-
-        });
-   </script>
+   <script type="text/javascript"  src="Scripts/User/user.js"></script>
 }
 
 
