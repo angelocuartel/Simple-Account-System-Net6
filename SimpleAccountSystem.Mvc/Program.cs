@@ -30,7 +30,10 @@ builder.Services.SetIdentitySessionCookiesConfiguration();
 builder.Services.BuildFluentEmailDependencies(builder.Configuration);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(opt =>
+{
+    opt.SuppressAsyncSuffixInActionNames = false;
+});
 
 builder.Services.AddScoped<IEmailSender,FluentEmailService>();
 
