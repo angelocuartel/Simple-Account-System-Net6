@@ -3,6 +3,8 @@
     For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 *@
 
+@model SimpleAccountSystem.Mvc.Models.UserModel
+
 <div id="user-modal" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -11,10 +13,29 @@
                 <button data-bs-dismiss="modal" class="btn-close"></button>
             </div>
             <div class="modal-body">
-                
+                <form id="form-user">
+
+                    @Html.AntiForgeryToken()
+                    <div class="my-1">
+                        <label class="form-label">UserName</label>
+                        <input type="text" asp-for="UserName" class="form-control" name="UserName" />
+                    </div>
+                    <div class="my-1">
+                        <label class="form-label">Email</label>
+                        <input type="email" asp-for="Email" class="form-control" name="Email" />
+                    </div>
+                    <div cclass="my-1">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-control" name="Password" />
+                    </div>
+                    <div cclass="my-1">
+                        <label class="form-label">Confirm Password</label>
+                        <input type="password" class="form-control" name="ConfirmPassword" />
+                    </div>
+                </form>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-primary">Add</button>
+                <button class="btn btn-primary" id="btn-save-user">Save</button>
             </div>
         </div>
     </div>
