@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SimpleAccountSystem.Mvc.Commons;
 using SimpleAccountSystem.Mvc.Dto;
+using SimpleAccountSystem.Mvc.Models;
 
 namespace SimpleAccountSystem.Mvc.Controllers
 {
@@ -11,6 +12,7 @@ namespace SimpleAccountSystem.Mvc.Controllers
     public class UserController : Controller
     {
         private readonly UserManager<IdentityUser> _userManager;
+
 
         public UserController(UserManager<IdentityUser> userManager)
         {
@@ -47,6 +49,34 @@ namespace SimpleAccountSystem.Mvc.Controllers
             };
 
             return new JsonResult(result);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddUserAsync(UserModel user)
+        {
+            if (user is not null)
+            {
+                if (user.Password != user.ConfirmPassword)
+                {
+                    return BadRequest("Password does not match!");
+                }
+
+                var resultCreation = await _userManager.CreateAsync(new IdentityUser 
+                {
+                    Email = user.Email, 
+                    UserName = user.UserName
+                }
+                , user.Password);
+
+                if (resultCreation.Succeeded)
+                {
+                    return Ok();
+                }
+
+                return BadRequest("Unable to create new user");
+            }
+            return new JsonResult(new { });
         }
 
         private IEnumerable<IdentityUser> FilterUsers(string filter)

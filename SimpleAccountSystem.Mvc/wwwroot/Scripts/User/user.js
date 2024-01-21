@@ -42,4 +42,24 @@
         $('#user-modal').modal('show');
     });
 
+    $('#btn-save-user').on('click', () => {
+        const postData = $('#form-user').serialize();
+        requestAjax(postData);
+    });
+
+    const requestAjax = (postData) => {
+        $.ajax({
+            url: '/User/AddUserAsync',
+            type: 'POST',
+            data: postData,
+            success: () => {
+                alert('Successfully saved new user!');
+                $('#user-modal').modal('hide');
+                table.ajax.reload();
+            },
+            error: (result) => {
+                alert(result.responseText);
+            }
+        });
+    };
 });
