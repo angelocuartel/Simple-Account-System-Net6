@@ -13,7 +13,6 @@ namespace SimpleAccountSystem.Mvc.Controllers
     {
         private readonly UserManager<IdentityUser> _userManager;
 
-
         public UserController(UserManager<IdentityUser> userManager)
         {
             _userManager = userManager;
@@ -65,7 +64,8 @@ namespace SimpleAccountSystem.Mvc.Controllers
                 var resultCreation = await _userManager.CreateAsync(new IdentityUser 
                 {
                     Email = user.Email, 
-                    UserName = user.UserName
+                    UserName = user.UserName,
+                    EmailConfirmed = user.EmailConfirmed
                 }
                 , user.Password);
 
@@ -74,7 +74,7 @@ namespace SimpleAccountSystem.Mvc.Controllers
                     return Ok();
                 }
 
-                return BadRequest("Unable to create new user");
+                return BadRequest(resultCreation.Errors.FirstOrDefault()?.Description);
             }
             return new JsonResult(new { });
         }
