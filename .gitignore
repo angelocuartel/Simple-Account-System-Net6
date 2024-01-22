@@ -33,3 +33,5 @@ msbuild.wrn
 # Visual Studio 2015
 .vs/
 /SimpleAccountSystem.Mvc/appsettings.Development.json
+/SimpleAccountSystem.Mvc/appsettings.json
+/SimpleAccountSystem.Mvc/appsettings.Development.json
