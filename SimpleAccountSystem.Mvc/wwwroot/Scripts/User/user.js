@@ -43,8 +43,11 @@
     });
 
     $('#btn-save-user').on('click', () => {
-        const postData = $('#form-user').serialize();
-        requestAjax(postData);
+        const postData = $('#form-user');
+        postData.validate();
+        if (postData.valid()) {
+            requestAjax(postData.serialize());
+        }
     });
 
     const requestAjax = (postData) => {
