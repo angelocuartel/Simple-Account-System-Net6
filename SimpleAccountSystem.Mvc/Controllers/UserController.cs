@@ -2,14 +2,16 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SimpleAccountSystem.Mvc.Commons;
+using SimpleAccountSystem.Mvc.Controllers.Base;
 using SimpleAccountSystem.Mvc.Dto;
 using SimpleAccountSystem.Mvc.Models;
+using SimpleAccountSystem.Mvc.Validations;
 
 namespace SimpleAccountSystem.Mvc.Controllers
 {
     [Authorize]
     //[StepUpAuthentication]
-    public class UserController : Controller
+    public class UserController : CustomControllerBase
     {
         private readonly UserManager<IdentityUser> _userManager;
 
@@ -54,29 +56,24 @@ namespace SimpleAccountSystem.Mvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddUserAsync(UserModel user)
         {
-            if (user is not null)
+            var modelValidation = await ValidateModelAsync<UserModel, UserModelValidator>(user);
+            if (modelValidation.IsValid)
             {
-                if (user.Password != user.ConfirmPassword)
+                var resultCreation = await _userManager.CreateAsync(new IdentityUser
                 {
-                    return BadRequest("Password does not match!");
-                }
-
-                var resultCreation = await _userManager.CreateAsync(new IdentityUser 
-                {
-                    Email = user.Email, 
+                    Email = user.Email,
                     UserName = user.UserName,
                     EmailConfirmed = user.EmailConfirmed
                 }
-                , user.Password);
+                  , user.Password);
 
                 if (resultCreation.Succeeded)
                 {
                     return Ok();
                 }
-
-                return BadRequest(resultCreation.Errors.FirstOrDefault()?.Description);
             }
-            return new JsonResult(new { });
+
+            return FluentBadRequest(modelValidation.Errors);
         }
 
         private IEnumerable<IdentityUser> FilterUsers(string filter)

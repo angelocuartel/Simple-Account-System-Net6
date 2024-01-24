@@ -1,5 +1,4 @@
 ﻿
-
 <h1>User List</h1>
 <div class="row">
     <div class="float-end">
@@ -22,10 +21,11 @@
 </div>
 
 
-<partial name="_AddUserPartialModal.cshtml" />
-
 @section scripts{
+    <partial name="_ValidationScriptsPartial.cshtml" />
    <script type="text/javascript"  src="Scripts/User/user.js"></script>
 }
+
+<partial name="_AddUserPartialModal.cshtml" />
 
 
