@@ -15,6 +15,8 @@ namespace SimpleAccountSystem.Mvc.Controllers
     {
         private readonly UserManager<IdentityUser> _userManager;
 
+        private string _currentUserId;
+
         public UserController(UserManager<IdentityUser> userManager)
         {
             _userManager = userManager;
@@ -28,23 +30,25 @@ namespace SimpleAccountSystem.Mvc.Controllers
         [HttpGet]
         public IActionResult GetUsers()
         {
+            _currentUserId = _userManager.GetUserId(User);
+
             var rawRequestQuery = HttpContext.Request.Query;
             var extractedDataTableParameters = rawRequestQuery.ExtractGenericQueryData();
             IEnumerable<IdentityUser>? users = null;
 
             if (!string.IsNullOrEmpty(extractedDataTableParameters.SearchValue))
             {
-                users = FilterUsers(extractedDataTableParameters.SearchValue);
+                users = GetFilteredUsers(extractedDataTableParameters.SearchValue);
             }
             else
             {
-                users = _userManager.Users.Take(extractedDataTableParameters.Length);
+                users = GetUsers(extractedDataTableParameters.Length);
             }
 
             var result = new GenericResultDto<IdentityUser>
             {
                 draw = extractedDataTableParameters.Draw,
-                data = users.Take(extractedDataTableParameters.Length),
+                data = users,
                 recordsTotal = users.Count(),
                 recordsFiltered = users.Count()
             };
@@ -76,16 +80,23 @@ namespace SimpleAccountSystem.Mvc.Controllers
             return FluentBadRequest(modelValidation.Errors);
         }
 
-        private IEnumerable<IdentityUser> FilterUsers(string filter)
+        private IEnumerable<IdentityUser> GetFilteredUsers(string filter)
         {
             IEnumerable<IdentityUser>? result = null;
 
-            result = _userManager.Users.Where(i => i.UserName.Contains(filter)
+            result = _userManager.Users.Where(i => (i.UserName.Contains(filter)
             || i.Email.Contains(filter)
-            || i.TwoFactorEnabled.ToString().Contains(filter))
+            || i.UserName.Contains(filter))
+            && i.Id != _currentUserId)
                 .Select(i => new IdentityUser { Email = i.Email, UserName = i.UserName, TwoFactorEnabled = i.TwoFactorEnabled });
 
             return result;
         }
+
+        private IEnumerable<IdentityUser> GetUsers(int recordCount)
+        =>_userManager.Users
+            .Where(i => i.Id != _currentUserId)
+            .Take(recordCount);
+        
     }
 }
