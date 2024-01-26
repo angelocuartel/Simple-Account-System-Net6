@@ -1,15 +1,12 @@
-using FluentValidation;
-using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using SimpleAccountSystem.Mvc.Configurations.FluentEmail;
+using SimpleAccountSystem.Mvc.Configurations.FluentValidation;
 using SimpleAccountSystem.Mvc.Configurations.Identity;
 using SimpleAccountSystem.Mvc.Configurations.Session;
 using SimpleAccountSystem.Mvc.Data;
 using SimpleAccountSystem.Mvc.Services.FluentEmail;
-using SimpleAccountSystem.Mvc.Validations;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("SimpleAccountSystemMvcContextConnection") ?? throw new InvalidOperationException("Connection string 'SimpleAccountSystemMvcContextConnection' not found.");
@@ -38,13 +35,11 @@ builder.Services.AddControllersWithViews(opt =>
     opt.SuppressAsyncSuffixInActionNames = false;
 });
 
-builder.Services.AddScoped<IEmailSender,FluentEmailService>();
+builder.Services.AddScoped<IEmailSender, FluentEmailService>();
 
 builder.Services.AddSessionWithDefaultConfiguration();
 
-builder.Services.AddFluentValidationAutoValidation()
-    .AddFluentValidationClientsideAdapters();
-builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+builder.Services.AddFluentConfiguration();
 
 var app = builder.Build();
 
@@ -60,7 +55,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-app.UseAuthentication();;
+app.UseAuthentication(); ;
 
 app.UseAuthorization();
 
