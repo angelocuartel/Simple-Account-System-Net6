@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
+using SimpleAccountSystem.Mvc.Dto;
 
 namespace SimpleAccountSystem.Mvc.Controllers.Base
 {
@@ -28,6 +29,19 @@ namespace SimpleAccountSystem.Mvc.Controllers.Base
         {
             var firstError = errors.FirstOrDefault()?.ErrorMessage;
             return BadRequest(firstError);
+        }
+
+        protected JsonResult DataTableResult<T>(IEnumerable<T> records, int dataTableDraw)
+        {
+            var genericResultDto =  new GenericResultDto<T>
+            {
+                draw = dataTableDraw,
+                data = records,
+                recordsTotal = records.Count(),
+                recordsFiltered = records.Count()
+            };
+
+            return new JsonResult(genericResultDto);
         }
         
 

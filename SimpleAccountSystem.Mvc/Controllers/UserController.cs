@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using SimpleAccountSystem.Domain.Service;
+using SimpleAccountSystem.Dto.Request;
 using SimpleAccountSystem.Mvc.Commons;
 using SimpleAccountSystem.Mvc.Controllers.Base;
-using SimpleAccountSystem.Mvc.Dto;
 using SimpleAccountSystem.Mvc.Models;
 using SimpleAccountSystem.Mvc.Validations;
+using System.Drawing.Text;
 
 namespace SimpleAccountSystem.Mvc.Controllers
 {
@@ -13,13 +15,10 @@ namespace SimpleAccountSystem.Mvc.Controllers
     //[StepUpAuthentication]
     public class UserController : CustomControllerBase
     {
-        private readonly UserManager<IdentityUser> _userManager;
-
-        private string _currentUserId;
-
+        private readonly UserService _userService;
         public UserController(UserManager<IdentityUser> userManager)
         {
-            _userManager = userManager;
+            _userService = new UserService(userManager);
         }
 
         public IActionResult Index()
@@ -30,30 +29,14 @@ namespace SimpleAccountSystem.Mvc.Controllers
         [HttpGet]
         public IActionResult GetUsers()
         {
-            _currentUserId = _userManager.GetUserId(User);
-
             var rawRequestQuery = HttpContext.Request.Query;
             var extractedDataTableParameters = rawRequestQuery.ExtractGenericQueryData();
-            IEnumerable<IdentityUser>? users = null;
 
-            if (!string.IsNullOrEmpty(extractedDataTableParameters.SearchValue))
-            {
-                users = GetFilteredUsers(extractedDataTableParameters.SearchValue);
-            }
-            else
-            {
-                users = GetUsers(extractedDataTableParameters.Length);
-            }
+            var users = _userService.GetUsers(extractedDataTableParameters.Length, 
+                extractedDataTableParameters.SearchValue);
+            var excludedCurrentUser = ExcludeCurrentUser(users);
 
-            var result = new GenericResultDto<IdentityUser>
-            {
-                draw = extractedDataTableParameters.Draw,
-                data = users,
-                recordsTotal = users.Count(),
-                recordsFiltered = users.Count()
-            };
-
-            return new JsonResult(result);
+            return DataTableResult(excludedCurrentUser, extractedDataTableParameters.Draw);
         }
 
         [HttpPost]
@@ -63,40 +46,25 @@ namespace SimpleAccountSystem.Mvc.Controllers
             var modelValidation = await ValidateModelAsync<UserModel, UserModelValidator>(user);
             if (modelValidation.IsValid)
             {
-                var resultCreation = await _userManager.CreateAsync(new IdentityUser
-                {
-                    Email = user.Email,
-                    UserName = user.UserName,
-                    EmailConfirmed = user.EmailConfirmed
-                }
-                  , user.Password);
-
-                if (resultCreation.Succeeded)
-                {
-                    return Ok();
-                }
+                var userRequest = new IdentityUserRequestDto(user.UserName,
+                    user.Email,  
+                    user.Password,
+                    user.ConfirmPassword,
+                    user.EmailConfirmed
+                    );
+                
+                return Ok(await _userService.AddUserAsync(userRequest));
             }
 
             return FluentBadRequest(modelValidation.Errors);
         }
 
-        private IEnumerable<IdentityUser> GetFilteredUsers(string filter)
+        private  IEnumerable<IdentityUser> ExcludeCurrentUser(IEnumerable<IdentityUser> users)
         {
-            IEnumerable<IdentityUser>? result = null;
+            var currentUserId = _userService.GetUserId(User);
 
-            result = _userManager.Users.Where(i => (i.UserName.Contains(filter)
-            || i.Email.Contains(filter)
-            || i.UserName.Contains(filter))
-            && i.Id != _currentUserId)
-                .Select(i => new IdentityUser { Email = i.Email, UserName = i.UserName, TwoFactorEnabled = i.TwoFactorEnabled });
-
-            return result;
+            return users.Where(i => i.Id != currentUserId);
         }
 
-        private IEnumerable<IdentityUser> GetUsers(int recordCount)
-        =>_userManager.Users
-            .Where(i => i.Id != _currentUserId)
-            .Take(recordCount);
-        
     }
 }
