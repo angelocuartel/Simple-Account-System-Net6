@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SimpleAccountSystem.Domain.Service;
@@ -16,9 +17,11 @@ namespace SimpleAccountSystem.Mvc.Controllers
     public class UserController : CustomControllerBase
     {
         private readonly UserService _userService;
-        public UserController(UserManager<IdentityUser> userManager)
+        private readonly IMapper _mapper;
+        public UserController(UserManager<IdentityUser> userManager, IMapper mapper)
         {
             _userService = new UserService(userManager);
+            _mapper = mapper;
         }
 
         public IActionResult Index()
@@ -46,14 +49,11 @@ namespace SimpleAccountSystem.Mvc.Controllers
             var modelValidation = await ValidateModelAsync<UserModel, UserModelValidator>(user);
             if (modelValidation.IsValid)
             {
-                var userRequest = new IdentityUserRequestDto(user.UserName,
-                    user.Email,  
-                    user.Password,
-                    user.ConfirmPassword,
-                    user.EmailConfirmed
-                    );
-                
-                return Ok(await _userService.AddUserAsync(userRequest));
+                var mappedUser  = _mapper.Map<UserModel, IdentityUserRequestDto>(user);
+
+                var result = await _userService.AddUserAsync(mappedUser);
+
+                return Ok(result);
             }
 
             return FluentBadRequest(modelValidation.Errors);

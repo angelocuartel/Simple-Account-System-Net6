@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using SimpleAccountSystem.Mvc.Configurations.Automapper;
 using SimpleAccountSystem.Mvc.Configurations.FluentEmail;
 using SimpleAccountSystem.Mvc.Configurations.FluentValidation;
 using SimpleAccountSystem.Mvc.Configurations.Identity;
@@ -40,6 +41,8 @@ builder.Services.AddScoped<IEmailSender, FluentEmailService>();
 builder.Services.AddSessionWithDefaultConfiguration();
 
 builder.Services.AddFluentConfiguration();
+
+builder.Services.AddAutoMapper(typeof(AutomapperProfile));
 
 var app = builder.Build();
 
