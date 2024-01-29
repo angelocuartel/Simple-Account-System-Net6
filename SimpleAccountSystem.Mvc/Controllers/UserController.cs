@@ -8,7 +8,6 @@ using SimpleAccountSystem.Mvc.Commons;
 using SimpleAccountSystem.Mvc.Controllers.Base;
 using SimpleAccountSystem.Mvc.Models;
 using SimpleAccountSystem.Mvc.Validations;
-using System.Drawing.Text;
 
 namespace SimpleAccountSystem.Mvc.Controllers
 {
@@ -16,11 +15,11 @@ namespace SimpleAccountSystem.Mvc.Controllers
     //[StepUpAuthentication]
     public class UserController : CustomControllerBase
     {
-        private readonly UserService _userService;
+        private readonly IUserService _userService;
         private readonly IMapper _mapper;
-        public UserController(UserManager<IdentityUser> userManager, IMapper mapper)
+        public UserController(IUserService userService, IMapper mapper)
         {
-            _userService = new UserService(userManager);
+            _userService = userService;
             _mapper = mapper;
         }
 
@@ -35,7 +34,7 @@ namespace SimpleAccountSystem.Mvc.Controllers
             var rawRequestQuery = HttpContext.Request.Query;
             var extractedDataTableParameters = rawRequestQuery.ExtractGenericQueryData();
 
-            var users = _userService.GetUsers(extractedDataTableParameters.Length, 
+            var users = _userService.GetUsers(extractedDataTableParameters.Length,
                 extractedDataTableParameters.SearchValue);
             var excludedCurrentUser = ExcludeCurrentUser(users);
 
@@ -49,7 +48,7 @@ namespace SimpleAccountSystem.Mvc.Controllers
             var modelValidation = await ValidateModelAsync<UserModel, UserModelValidator>(user);
             if (modelValidation.IsValid)
             {
-                var mappedUser  = _mapper.Map<UserModel, IdentityUserRequestDto>(user);
+                var mappedUser = _mapper.Map<UserModel, IdentityUserRequestDto>(user);
 
                 var result = await _userService.AddUserAsync(mappedUser);
 
@@ -59,7 +58,7 @@ namespace SimpleAccountSystem.Mvc.Controllers
             return FluentBadRequest(modelValidation.Errors);
         }
 
-        private  IEnumerable<IdentityUser> ExcludeCurrentUser(IEnumerable<IdentityUser> users)
+        private IEnumerable<IdentityUser> ExcludeCurrentUser(IEnumerable<IdentityUser> users)
         {
             var currentUserId = _userService.GetUserId(User);
 
