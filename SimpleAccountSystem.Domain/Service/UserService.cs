@@ -4,7 +4,7 @@ using System.Security.Claims;
 
 namespace SimpleAccountSystem.Domain.Service
 {
-    public sealed class UserService
+    public sealed class UserService : IUserService
     {
         private readonly UserManager<IdentityUser> _userManager;
 
