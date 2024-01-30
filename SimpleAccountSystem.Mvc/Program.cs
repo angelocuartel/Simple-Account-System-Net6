@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using Sentry;
 using SimpleAccountSystem.Mvc.Configurations.Automapper;
 using SimpleAccountSystem.Mvc.Configurations.Dependencies;
 using SimpleAccountSystem.Mvc.Configurations.FluentEmail;
 using SimpleAccountSystem.Mvc.Configurations.FluentValidation;
 using SimpleAccountSystem.Mvc.Configurations.Identity;
+using SimpleAccountSystem.Mvc.Configurations.Sentry;
 using SimpleAccountSystem.Mvc.Configurations.Session;
 using SimpleAccountSystem.Mvc.Data;
 using SimpleAccountSystem.Mvc.Services.FluentEmail;
@@ -46,6 +48,8 @@ builder.Services.AddFluentConfiguration();
 builder.Services.InjectDependencies();
 
 builder.Services.AddAutoMapper(typeof(AutomapperProfile));
+
+SentryConfiguration.Build(builder.Configuration);
 
 var app = builder.Build();
 
