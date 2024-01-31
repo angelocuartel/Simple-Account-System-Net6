@@ -15,7 +15,6 @@ namespace SimpleAccountSystem.Test.Services
         // real objects
         private Fixture? _fixture;
         private UserService? _userService;
-        private UserManager<IdentityUser>? _userManager;
 
         //mock objects
         private Mock<IUserStore<IdentityUser>>? _userStoreMock;
