@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using SimpleAccountSystem.Domain.Service;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Security.Claims;
 
 namespace SimpleAccountSystem.Test.Services
@@ -25,13 +26,13 @@ namespace SimpleAccountSystem.Test.Services
         {
             _fixture = new Fixture();
             _userStoreMock = new Mock<IUserStore<IdentityUser>>();
-            _userManagerMock = new Mock<UserManager<IdentityUser>>(_userStoreMock?.Object, 
+            _userManagerMock = new Mock<UserManager<IdentityUser>>(_userStoreMock?.Object,
                 null,
-                null, 
-                null, 
-                null, 
                 null,
-                null, 
+                null,
+                null,
+                null,
+                null,
                 null,
                 null);
 
@@ -57,6 +58,53 @@ namespace SimpleAccountSystem.Test.Services
             Assert.IsNotNull(result);
             _userManagerMock?.Verify(i => i.GetUserId(It.IsAny<ClaimsPrincipal>()), Times.Once);
 
+        }
+
+        #endregion
+
+        #region GetUsers Method Unit Test
+
+        [TestMethod]
+        public void Given_GetUsers_When_HasValid_RecordCount_Then_ReturnUsers()
+        {
+            //Arrange
+            var recordCount = 5;
+            var fakeUsers = _fixture
+                .CreateMany<IdentityUser>(10)
+                .AsQueryable();
+
+            _userManagerMock?.Setup(i => i.Users).Returns(fakeUsers);
+
+            //Act
+            var result = _userService?.GetUsers(recordCount);
+
+            //Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(result.Count(),recordCount);
+            _userManagerMock?.Verify(i => i.Users, Times.Once);
+        }
+
+        [TestMethod]
+        public void Given_GetUsers_When_HasValid_RecordCount_And_Filter_Then_ReturnUsers()
+        {
+            //Arrange
+            var recordCount = 5;
+            var fakeUsers = _fixture
+                .CreateMany<IdentityUser>(10)
+                .AsQueryable();
+
+            var filter = fakeUsers.FirstOrDefault()?
+                .UserName;
+
+            _userManagerMock?.Setup(i => i.Users).Returns(fakeUsers);
+
+            //Act
+            var result = _userService?.GetUsers(recordCount, filter);
+
+            //Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(result.Count(), 1);
+            _userManagerMock?.Verify(i => i.Users, Times.Once);
         }
 
         #endregion
