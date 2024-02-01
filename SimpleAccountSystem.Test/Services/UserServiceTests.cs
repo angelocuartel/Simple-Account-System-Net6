@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using SimpleAccountSystem.Domain.Service;
+using SimpleAccountSystem.Dto.Request;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Security.Claims;
@@ -105,6 +106,33 @@ namespace SimpleAccountSystem.Test.Services
             Assert.IsNotNull(result);
             Assert.AreEqual(result.Count(), 1);
             _userManagerMock?.Verify(i => i.Users, Times.Once);
+        }
+
+        #endregion
+
+        #region AddUserAsync Method Unit Test
+
+        [TestMethod]
+        public async Task Given_AddUserAsync_When_HasValid_IdentityUserRequestDto_Then_CreateUser()
+        {
+            //Arrange
+            var fakeIdentityUserRequestDto = _fixture.Create<IdentityUserRequestDto>();
+            var fakeIdentityResult = _fixture?
+                .Build<IdentityResult>()
+                .Create();
+
+
+            _userManagerMock?.Setup(i => i.CreateAsync(It.IsAny<IdentityUser>(), It.IsAny<string>()))
+                .ReturnsAsync(fakeIdentityResult);
+
+            //Act
+            var result = await _userService?.AddUserAsync(fakeIdentityUserRequestDto);
+            
+
+            //Assert
+            Assert.IsNotNull(result);
+            _userManagerMock?.Verify(i => i.CreateAsync(It.IsAny<IdentityUser>(), It.IsAny<string>()),Times.Once);
+
         }
 
         #endregion
