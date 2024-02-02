@@ -1,5 +1,8 @@
-﻿namespace SimpleAccountSystem.Mvc.Dto
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace SimpleAccountSystem.Mvc.Dto
 {
+    [ExcludeFromCodeCoverage]
     public class GenericResultDto<T>
     {
         public int draw { get; set; } = 1;

@@ -1,5 +1,8 @@
-﻿namespace SimpleAccountSystem.Mvc.Models
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace SimpleAccountSystem.Mvc.Models
 {
+    [ExcludeFromCodeCoverage]
     public class UserModel
     {
         public string? UserName { get; set; }
