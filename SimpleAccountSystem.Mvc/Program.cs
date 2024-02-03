@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Sentry;
+using SimpleAccountSystem.Mvc.Attributes;
 using SimpleAccountSystem.Mvc.Configurations.Automapper;
 using SimpleAccountSystem.Mvc.Configurations.Dependencies;
 using SimpleAccountSystem.Mvc.Configurations.FluentEmail;
@@ -63,6 +64,8 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+app.UseMiddleware<GlobalExceptionHandlerMiddleWare>();
 
 app.UseRouting();
 app.UseAuthentication(); ;

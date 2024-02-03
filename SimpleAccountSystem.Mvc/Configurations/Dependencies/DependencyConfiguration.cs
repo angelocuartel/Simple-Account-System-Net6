@@ -1,4 +1,5 @@
 ﻿using SimpleAccountSystem.Domain.Service;
+using SimpleAccountSystem.Mvc.Attributes;
 
 namespace SimpleAccountSystem.Mvc.Configurations.Dependencies
 {
@@ -7,6 +8,7 @@ namespace SimpleAccountSystem.Mvc.Configurations.Dependencies
         public static void InjectDependencies(this IServiceCollection collection)
         {
             collection.AddScoped<IUserService, UserService>();
+            collection.AddScoped<GlobalExceptionHandlerMiddleWare>();
         }
     }
 }
