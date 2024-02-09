@@ -20,13 +20,18 @@ namespace SimpleAccountSystem.Test.Services
 
         //mock objects
         private Mock<IUserStore<IdentityUser>>? _userStoreMock;
+        private Mock<IRoleStore<IdentityRole>>? _roleStoreMock;
+
         private Mock<UserManager<IdentityUser>>? _userManagerMock;
+        private Mock<RoleManager<IdentityRole>>? _roleManagerMock;
 
         [TestInitialize]
         public void Setup()
         {
             _fixture = new Fixture();
             _userStoreMock = new Mock<IUserStore<IdentityUser>>();
+            _roleStoreMock = new Mock<IRoleStore<IdentityRole>>();
+
             _userManagerMock = new Mock<UserManager<IdentityUser>>(_userStoreMock?.Object,
                 null,
                 null,
@@ -37,7 +42,13 @@ namespace SimpleAccountSystem.Test.Services
                 null,
                 null);
 
-            _userService = new UserService(_userManagerMock.Object);
+            _roleManagerMock= new Mock<RoleManager<IdentityRole>>(_roleStoreMock.Object,
+                null,
+                null,
+                null,
+                null);
+
+            _userService = new UserService(_userManagerMock.Object, _roleManagerMock.Object);
         }
 
         #region GetUserId Method Unit Test
@@ -121,7 +132,6 @@ namespace SimpleAccountSystem.Test.Services
                 .Build<IdentityResult>()
                 .Create();
 
-
             _userManagerMock?.Setup(i => i.CreateAsync(It.IsAny<IdentityUser>(), It.IsAny<string>()))
                 .ReturnsAsync(fakeIdentityResult);
 
@@ -133,6 +143,55 @@ namespace SimpleAccountSystem.Test.Services
             Assert.IsNotNull(result);
             _userManagerMock?.Verify(i => i.CreateAsync(It.IsAny<IdentityUser>(), It.IsAny<string>()),Times.Once);
 
+        }
+
+        #endregion
+
+        #region GetRoles Method Unit Test
+
+        [TestMethod]
+        public void Given_GetRoles_When_HasNoFilter_Then_Return_Roles()
+        {
+            //Arrange
+            var fakeRoles = _fixture
+                .CreateMany<IdentityRole>(5)
+                .AsQueryable();
+
+            var fakeRolesCount = fakeRoles.Count();
+
+            _roleManagerMock?.Setup(i => i.Roles).Returns(fakeRoles);
+
+            //Act
+            var result = _userService?.GetRoles(fakeRolesCount);
+
+            //Assert
+            Assert.AreEqual(fakeRolesCount, result?.Count());
+
+            _roleManagerMock?.Verify(i => i.Roles, Times.Once);
+        }
+
+        [TestMethod]
+        public void Given_GetRoles_When_HasFilter_Then_Return_Matched_Roles()
+        {
+            //Arrange
+            var fakeRoles = _fixture
+                .CreateMany<IdentityRole>(5)
+                .AsQueryable();
+
+            var fakeFilter = fakeRoles.FirstOrDefault()?.Name;
+
+            var fakeRolesCount = fakeRoles.Count();
+
+            _roleManagerMock?.Setup(i => i.Roles).Returns(fakeRoles);
+
+            //Act
+            var result = _userService?.GetRoles(fakeRolesCount, fakeFilter);
+
+            //Assert
+            Assert.AreEqual(1, result?.Count());
+            Assert.AreEqual(fakeFilter, result?.FirstOrDefault()?.Name);
+
+            _roleManagerMock?.Verify(i => i.Roles, Times.Once);
         }
 
         #endregion
