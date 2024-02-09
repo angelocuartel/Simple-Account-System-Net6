@@ -1,0 +1,36 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+<h1>Role List</h1>
+<div class="row">
+    <div class="float-end">
+        <button id="btn-add-role" class="btn btn-dark w-[50%] float-end">Add Role</button>
+    </div>
+</div>
+<div class="row">
+    <div class="table-responsive py-1 border-2 border-danger">
+        <table class=" table table-bordered" id="role-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Concurrency Stamp</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+
+@section scripts{
+    <partial name="_ValidationScriptsPartial.cshtml" />
+    <script type="text/javascript" src="Scripts/Role/role.js"></script>
+}
+
+
+
+
+

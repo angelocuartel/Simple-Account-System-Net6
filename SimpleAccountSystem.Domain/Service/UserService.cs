@@ -7,10 +7,12 @@ namespace SimpleAccountSystem.Domain.Service
     public sealed class UserService : IUserService
     {
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public UserService(UserManager<IdentityUser> userManager)
+        public UserService(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         public IEnumerable<IdentityUser> GetUsers(int recordCount, string? filter = null)
@@ -44,7 +46,24 @@ namespace SimpleAccountSystem.Domain.Service
 
         public string GetUserId(ClaimsPrincipal currentUser)
         => _userManager.GetUserId(currentUser);
-        
+
+        public IEnumerable<IdentityRole> GetRoles(int recordCount, string? filter = null)
+        {
+            IEnumerable<IdentityRole> roles;
+
+            if (string.IsNullOrEmpty(filter))
+            {
+                roles = _roleManager.Roles.Take(recordCount);
+            }
+            else
+            {
+                roles = _roleManager.Roles.Where(i => i.Name.Contains(filter)
+                || i.ConcurrencyStamp.Contains(filter))
+                    .Select(i => new IdentityRole { Name = i.Name, ConcurrencyStamp = i.ConcurrencyStamp });
+            }
+
+            return roles;
+        }
 
         private IEnumerable<IdentityUser> GetFilteredUsers(string filter)
         {
@@ -53,8 +72,9 @@ namespace SimpleAccountSystem.Domain.Service
             result = _userManager.Users.Where(i => i.UserName.Contains(filter)
             || i.Email.Contains(filter)
             || i.UserName.Contains(filter))
-                .Select(i => new IdentityUser {
-                    Email = i.Email, 
+                .Select(i => new IdentityUser
+                {
+                    Email = i.Email,
                     UserName = i.UserName,
                     TwoFactorEnabled = i.TwoFactorEnabled
                 });

@@ -10,5 +10,7 @@ namespace SimpleAccountSystem.Domain.Service
         Task<bool> AddUserAsync(IdentityUserRequestDto user);
 
         string GetUserId(ClaimsPrincipal currentUser);
+
+        IEnumerable<IdentityRole> GetRoles(int recordCount, string? filter = null);
     }
 }
