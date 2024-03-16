@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace SimpleAccountSystem.Mvc.Migrations
+namespace SimpleAccountSystem.Data.Migrations
 {
-    public partial class InitDb : Migration
+    public partial class InitializeDatabase : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -46,6 +46,20 @@ namespace SimpleAccountSystem.Mvc.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PageModule",
+                columns: table => new
+                {
+                    PageModuleId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PageModule", x => x.PageModuleId);
                 });
 
             migrationBuilder.CreateTable(
@@ -210,6 +224,9 @@ namespace SimpleAccountSystem.Mvc.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "PageModule");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

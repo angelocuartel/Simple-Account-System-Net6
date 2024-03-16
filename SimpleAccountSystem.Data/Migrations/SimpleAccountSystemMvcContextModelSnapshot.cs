@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using SimpleAccountSystem.Mvc.Data;
+using SimpleAccountSystem.Data;
 
 #nullable disable
 
-namespace SimpleAccountSystem.Mvc.Migrations
+namespace SimpleAccountSystem.Data.Migrations
 {
     [DbContext(typeof(SimpleAccountSystemMvcContext))]
     partial class SimpleAccountSystemMvcContextModelSnapshot : ModelSnapshot
@@ -17,7 +17,7 @@ namespace SimpleAccountSystem.Mvc.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.20")
+                .HasAnnotation("ProductVersion", "6.0.26")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -222,6 +222,25 @@ namespace SimpleAccountSystem.Mvc.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("SimpleAccountSystem.Entity.PageModule", b =>
+                {
+                    b.Property<int>("PageModuleId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PageModuleId"), 1L, 1);
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("PageModuleId");
+
+                    b.ToTable("PageModule", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

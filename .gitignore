@@ -34,3 +34,5 @@ msbuild.wrn
 .vs/
 /SimpleAccountSystem.Mvc/appsettings.json
 /SimpleAccountSystem.Mvc/appsettings.Development.json
+/SimpleAccountSystem.Data/appsettings.json
+/SimpleAccountSystem.Data/appsettings.Development.json
